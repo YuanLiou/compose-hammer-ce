@@ -99,4 +99,10 @@ tasks {
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels = properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) }
     }
+
+    val cleanBuildDir by registering(Delete::class) {
+        println("Start cleaning... build Dir")
+        delete(rootProject.layout.buildDirectory)
+        println("Clean finished")
+    }
 }
