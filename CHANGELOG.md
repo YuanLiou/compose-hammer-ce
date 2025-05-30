@@ -2,7 +2,7 @@
 
 # Changelog
 
-## [0.3]
+## [0.0.3]
 
 - Support Android Studio Meerkat
 - Minor bugfixes and improvements.
