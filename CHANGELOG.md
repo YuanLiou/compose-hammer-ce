@@ -2,8 +2,9 @@
 
 # Changelog
 
-## [Unreleased]
+## [0.3]
 
+- Support Android Studio Meerkat
 - Minor bugfixes and improvements.
 
 ## [2023.10.11] - Open-source 🎉
