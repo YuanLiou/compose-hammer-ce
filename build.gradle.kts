@@ -12,12 +12,24 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
 }
 
+val isSnapshot = properties("snapshot").get().toBoolean()
+val pluginVersionName = when (isSnapshot) {
+    true -> properties("pluginVersion").map { "$it-SNAPSHOT" }
+    false -> properties("pluginVersion")
+}.get()
+version = pluginVersionName
+
 group = properties("pluginGroup").get()
-version = properties("pluginVersion").get()
+
+val platformVersion: String by project
+val platformType: String by project
 
 // Configure project's dependencies
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
@@ -25,6 +37,19 @@ dependencies {
 //    implementation(libs.annotations)
     implementation(libs.kotlinx.serializationJson)
     testImplementation("junit:junit:4.13.2")
+
+    intellijPlatform {
+        // Snapshots don't use installers
+        // https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html#target-versions-installers
+        var useInstaller = "EAP-SNAPSHOT" !in platformVersion
+        if (platformType == "RD") {
+            // Using Rider as a target IntelliJ Platform with `useInstaller = true` is currently not supported, please set `useInstaller = false` instead. See: https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1852
+            useInstaller = false
+        }
+        val plugins = properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }.get()
+        create(platformType, platformVersion, useInstaller)
+        bundledPlugins(plugins)
+    }
 }
 
 // Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
@@ -32,14 +57,16 @@ kotlin {
     jvmToolchain(17)
 }
 
-// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    pluginName = properties("pluginName")
-    version = properties("platformVersion")
-    type = properties("platformType")
-
-    // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
-    plugins = properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) }
+intellijPlatform {
+    pluginConfiguration {
+        name = "Compose Hammer CE"
+        version = pluginVersionName
+        vendor {
+            name = "louis383"
+            url = "https://github.com/YuanLiou/compose-hammer-ce"
+            email = "louis383@gmail.com"
+        }
+    }
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
@@ -54,7 +81,7 @@ tasks {
     }
 
     patchPluginXml {
-        version = properties("pluginVersion")
+        version = pluginVersionName
         sinceBuild = properties("pluginSinceBuild")
         untilBuild = properties("pluginUntilBuild")
 
@@ -98,5 +125,11 @@ tasks {
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels = properties("pluginVersion").map { listOf(it.split('-').getOrElse(1) { "default" }.split('.').first()) }
+    }
+
+    val cleanBuildDir by registering(Delete::class) {
+        println("Start cleaning... build Dir")
+        delete(rootProject.layout.buildDirectory)
+        println("Clean finished")
     }
 }
