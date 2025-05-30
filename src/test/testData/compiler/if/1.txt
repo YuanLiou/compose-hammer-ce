@@ -1,4 +1,0 @@
-#if {{a}} #then
-a
-#endif
-other

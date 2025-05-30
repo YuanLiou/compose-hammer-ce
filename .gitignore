@@ -378,3 +378,6 @@ Temporary Items
 hs_err_pid*
 replay_pid*
 
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle/wrapper/gradle-wrapper.jar
+

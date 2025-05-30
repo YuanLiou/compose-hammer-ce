@@ -1,5 +1,0 @@
-#if {{a}} #then
-then
-#else
-else
-#endif

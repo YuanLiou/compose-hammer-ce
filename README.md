@@ -1,14 +1,12 @@
-# Compose Hammer
-
-![Build](https://github.com/Ivy-Apps/compose-hammer/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/21912-compose-hammer.svg)](https://plugins.jetbrains.com/plugin/21912-compose-hammer)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/21912-compose-hammer.svg)](https://plugins.jetbrains.com/plugin/21912-compose-hammer)
+# Compose Hammer Community Edition
 
 <!-- Plugin description -->
-Compose Hammer is **a premium Android Studio Jetpack Compose Material3 UI builder plugin**
+This is the forked version of [Compose Hammer](https://github.com/Ivy-Apps/compose-hammer). Compose Hammer is **a premium Android Studio Jetpack Compose Material3 UI builder plugin**
 that supports **59+ Material3 components** and
 **30+ Jetpack Compose code patterns** like
 `remember`, `mutableStateOf`, `LaunchedEffect`s, animations, layouts and more!
+
+## From the original readme:
 
 **TL;DR;**
 
@@ -170,10 +168,4 @@ available in our new **⚡ QuickCode alt/option + enter shortcut**.
   - Animate Dp
   - Animate Color
 
-_Pst: Keep in mind - this an MVP ⚠️, and it’ll only get better. That being said,
-your feedback and encouragement _(positive reviews)_ are highly appreciated!
-This will motivate us to work harder and make the plugin better._
-
-**P.S.** Feel free to report any bugs,
-missing components or your feedback at our [Compose Hammer Telegram chat](https://t.me/+U9Qn68cZxYIxNDA0).
 <!-- Plugin description end -->
