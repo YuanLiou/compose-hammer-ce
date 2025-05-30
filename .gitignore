@@ -4,6 +4,9 @@
 build
 .idea/
 .idea/*
+.intellijPlatform
+.intellijPlatform/
+.intellijPlatform/*
 
 ### Java template
 # Compiled class file
