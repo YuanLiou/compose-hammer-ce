@@ -1,8 +1,6 @@
-# Compose Hammer
+# Compose Hammer Community Edition
 
-![Build](https://github.com/Ivy-Apps/compose-hammer/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/21912-compose-hammer.svg)](https://plugins.jetbrains.com/plugin/21912-compose-hammer)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/21912-compose-hammer.svg)](https://plugins.jetbrains.com/plugin/21912-compose-hammer)
+From the original TEMPLATE.md
 
 ## Template ToDo list
 - [x] Create a new [IntelliJ Platform Plugin Template][template] project.
