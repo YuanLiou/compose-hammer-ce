@@ -15,28 +15,11 @@ fun Panel.reviewAndTelegramPrompt(
             text("Help us make it better!")
         }
         row {
-            label("Join our invite-only")
-            browserLink(
-                "Telegram chat",
-                "https://t.me/+U9Qn68cZxYIxNDA0"
-            ).bold()
-        }
-        row {
             label("Give us feedback")
             browserLink(
                 "Review Compose Hammer",
                 "https://plugins.jetbrains.com/plugin/21912-compose-hammer/reviews"
             ).bold()
-        }
-        row {
-            text(
-                """
-                    <i><b>P.S.</b> These actions motivate us.<br>
-                    More importantly they give us the feedback<br>
-                    that we need to grow and improve the plugin.<br>
-                    => you may get better features in the process.</i>
-                """.trimIndent()
-            )
         }
     }
 }

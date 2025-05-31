@@ -1,11 +1,11 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.ivyapps.composehammer</id>
-    <name>Compose Hammer</name>
+    <name>Compose Hammer CE</name>
     <vendor
-            url="http://ivy-apps.com"
-            email="iliyan.germanov971@gmail.com">
-        ivyapps
+            url="https://github.com/YuanLiou/compose-hammer-ce"
+            email="louis383@gmail.com">
+        louis383
     </vendor>
 
     <depends>com.intellij.modules.platform</depends>
