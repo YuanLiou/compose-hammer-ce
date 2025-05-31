@@ -1,5 +1,11 @@
 # Compose Hammer Community Edition
 
+## Installation
+
+Please download the plugin from the [release page](https://github.com/YuanLiou/compose-hammer-ce/releases) and install it in Android Studio.
+
+![](https://github.com/user-attachments/assets/874c5c7c-604a-4f61-a8e7-075b1787b929)
+
 <!-- Plugin description -->
 This is the forked version of [Compose Hammer](https://github.com/Ivy-Apps/compose-hammer). Compose Hammer is **a premium Android Studio Jetpack Compose Material3 UI builder plugin**
 that supports **59+ Material3 components** and

@@ -1,5 +1,6 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -23,6 +24,7 @@ group = properties("pluginGroup").get()
 
 val platformVersion: String by project
 val platformType: String by project
+val javaVersion: String by project
 
 // Configure project's dependencies
 repositories {
@@ -53,8 +55,29 @@ dependencies {
 }
 
 // Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(javaVersion))
+    }
+}
+
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(javaVersion))
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(javaVersion))
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
+        freeCompilerArgs.addAll(
+            "-Xjvm-default=all-compatibility",
+            "-Xskip-prerelease-check",
+            "-Xallow-unstable-dependencies",
+        )
+        // allWarningsAsErrors.set(true)
+    }
 }
 
 intellijPlatform {
@@ -110,6 +133,13 @@ tasks {
                 )
             }
         }
+    }
+
+    compileJava {
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
+
+        options.encoding = "UTF-8"
     }
 
     signPlugin {
