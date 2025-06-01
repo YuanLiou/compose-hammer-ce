@@ -3,7 +3,6 @@ package com.ivyapps.composehammer.domain
 import com.ivyapps.composehammer.domain.data.material3.MaterialComponent
 import com.ivyapps.composehammer.domain.data.material3.MaterialComponentsGroup
 
-
 @DslMarker
 annotation class MaterialComponentDsl
 
@@ -79,15 +78,11 @@ class ComponentScope {
         )
     }
 
-    private fun <T> T?.required(): T {
-        return requireNotNull(this) { "Invalid component: ${this@ComponentScope}" }
-    }
+    private fun <T> T?.required(): T = requireNotNull(this) { "Invalid component: ${this@ComponentScope}" }
 }
 
 @MaterialComponentDsl
-fun MutableList<MaterialComponent>.component(
-    init: ComponentScope.() -> Unit
-) {
+fun MutableList<MaterialComponent>.component(init: ComponentScope.() -> Unit) {
     add(
         ComponentScope()
             .apply(init)

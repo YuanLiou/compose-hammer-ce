@@ -3,6 +3,7 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 fun properties(key: String) = providers.gradleProperty(key)
+
 fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
@@ -15,10 +16,11 @@ plugins {
 }
 
 val isSnapshot = properties("snapshot").get().toBoolean()
-val pluginVersionName = when (isSnapshot) {
-    true -> properties("pluginVersion").map { "$it-SNAPSHOT" }
-    false -> properties("pluginVersion")
-}.get()
+val pluginVersionName =
+    when (isSnapshot) {
+        true -> properties("pluginVersion").map { "$it-SNAPSHOT" }
+        false -> properties("pluginVersion")
+    }.get()
 version = pluginVersionName
 
 group = properties("pluginGroup").get()
@@ -115,30 +117,32 @@ tasks {
         untilBuild = properties("pluginUntilBuild")
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-        pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
-            val start = "<!-- Plugin description -->"
-            val end = "<!-- Plugin description end -->"
+        pluginDescription =
+            providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
+                val start = "<!-- Plugin description -->"
+                val end = "<!-- Plugin description end -->"
 
-            with (it.lines()) {
-                if (!containsAll(listOf(start, end))) {
-                    throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
+                with(it.lines()) {
+                    if (!containsAll(listOf(start, end))) {
+                        throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
+                    }
+                    subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
                 }
-                subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
             }
-        }
 
         val changelog = project.changelog // local variable for configuration cache compatibility
         // Get the latest available change notes from the changelog file
-        changeNotes = properties("pluginVersion").map { pluginVersion ->
-            with(changelog) {
-                renderItem(
-                    (getOrNull(pluginVersion) ?: getUnreleased())
-                        .withHeader(false)
-                        .withEmptySections(false),
-                    Changelog.OutputType.HTML,
-                )
+        changeNotes =
+            properties("pluginVersion").map { pluginVersion ->
+                with(changelog) {
+                    renderItem(
+                        (getOrNull(pluginVersion) ?: getUnreleased())
+                            .withHeader(false)
+                            .withEmptySections(false),
+                        Changelog.OutputType.HTML,
+                    )
+                }
             }
-        }
     }
 
     compileJava {

@@ -14,21 +14,34 @@ import com.ivyapps.composehammer.domain.data.quickcode.CodeItem
 import com.ivyapps.composehammer.domain.quickcode.service.QuickCodeService
 import javax.swing.Icon
 
-
-class QuickCodeIntentionAction : IntentionAction, HighPriorityAction, Iconable {
+class QuickCodeIntentionAction :
+    IntentionAction,
+    HighPriorityAction,
+    Iconable {
     override fun getText() = "Quick Code"
-    override fun getFamilyName() = "Quick Code"
-    override fun getIcon(flags: Int): Icon = IconLoader.getIcon(
-        "/quick_code.svg",
-        this@QuickCodeIntentionAction::class.java.classLoader
-    )
 
-    override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
+    override fun getFamilyName() = "Quick Code"
+
+    override fun getIcon(flags: Int): Icon =
+        IconLoader.getIcon(
+            "/quick_code.svg",
+            this@QuickCodeIntentionAction::class.java.classLoader
+        )
+
+    override fun isAvailable(
+        project: Project,
+        editor: Editor,
+        file: PsiFile
+    ): Boolean {
         val quickCodeService = project.service<QuickCodeService>()
         return quickCodeService.hasDefinedCustomTemplates()
     }
 
-    override fun invoke(project: Project, editor: Editor, file: PsiFile) {
+    override fun invoke(
+        project: Project,
+        editor: Editor,
+        file: PsiFile
+    ) {
         val quickCodeService = project.service<QuickCodeService>()
 
         editor.showOptionsPopup(
@@ -74,7 +87,6 @@ class QuickCodeIntentionAction : IntentionAction, HighPriorityAction, Iconable {
         } else {
             insertService.addCode(editor, file, codeItem)
         }
-
     }
 
     override fun startInWriteAction() = true

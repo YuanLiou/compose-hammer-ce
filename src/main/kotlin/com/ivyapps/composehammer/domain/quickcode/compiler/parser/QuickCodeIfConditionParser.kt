@@ -8,9 +8,7 @@ typealias IfCondParserScope = QCParserScope<IfStatement.Condition>
 class QuickCodeIfConditionParser(
     private val tokens: List<QuickCodeToken>,
 ) {
-    fun parse(
-        position: Int
-    ): Pair<IfStatement.Condition, Int>? {
+    fun parse(position: Int): Pair<IfStatement.Condition, Int>? {
         val scope = IfCondParserScope(tokens, position)
         val condition = scope.condition() ?: return null
         if (scope.currentToken() == QuickCodeToken.Then) {
@@ -19,8 +17,8 @@ class QuickCodeIfConditionParser(
         return condition to scope.position
     }
 
-    private fun IfCondParserScope.condition(): IfStatement.Condition? {
-        return or(
+    private fun IfCondParserScope.condition(): IfStatement.Condition? =
+        or(
             a = { andExpr() },
             b = {
                 or(
@@ -29,7 +27,6 @@ class QuickCodeIfConditionParser(
                 )
             }
         )
-    }
 
     private fun IfCondParserScope.brackets(): IfStatement.Condition.Brackets? {
         if (consumeToken() !is QuickCodeToken.IfExpression.OpenBracket) return null
@@ -64,14 +61,13 @@ class QuickCodeIfConditionParser(
         return IfStatement.Condition.Not(cond)
     }
 
-    private fun IfCondParserScope.boolVar(): IfStatement.Condition.BoolVar? {
-        return (consumeToken() as? QuickCodeToken.IfExpression.BoolVariable)?.let {
+    private fun IfCondParserScope.boolVar(): IfStatement.Condition.BoolVar? =
+        (consumeToken() as? QuickCodeToken.IfExpression.BoolVariable)?.let {
             IfStatement.Condition.BoolVar(it.name)
         }
-    }
 
-    private fun IfCondParserScope.term(): IfStatement.Condition? {
-        return or(
+    private fun IfCondParserScope.term(): IfStatement.Condition? =
+        or(
             a = { brackets() },
             b = {
                 or(
@@ -80,5 +76,4 @@ class QuickCodeIfConditionParser(
                 )
             }
         )
-    }
 }

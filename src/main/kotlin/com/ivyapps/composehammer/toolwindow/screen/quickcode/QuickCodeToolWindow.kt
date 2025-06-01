@@ -14,9 +14,7 @@ abstract class QuickCodeToolWindow<T>(
 
     protected abstract fun onRefreshUi(updatedItem: T)
 
-    protected fun perform(
-        action: QuickCodeService.() -> Either<String, T>
-    ) {
+    protected fun perform(action: QuickCodeService.() -> Either<String, T>) {
         when (val res = service.action()) {
             is Either.Left -> showErrorToast(res.error)
             is Either.Right -> onRefreshUi(res.value)

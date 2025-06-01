@@ -7,8 +7,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 
 @Service(Service.Level.PROJECT)
-class ImportsService(private val project: Project) {
-
+class ImportsService(
+    private val project: Project
+) {
     fun addMissingImports(
         file: PsiFile,
         document: Document,

@@ -6,9 +6,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 
 @Service(Service.Level.PROJECT)
-class RecognizerService(private val project: Project) {
-
-    fun isComposeFile(editor: Editor, file: PsiFile): Boolean {
-        return file.text.contains("@Composable")
-    }
+class RecognizerService(
+    private val project: Project
+) {
+    fun isComposeFile(
+        editor: Editor,
+        file: PsiFile
+    ): Boolean = file.text.contains("@Composable")
 }

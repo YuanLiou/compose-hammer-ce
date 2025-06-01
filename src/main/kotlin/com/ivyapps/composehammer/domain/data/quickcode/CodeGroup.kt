@@ -10,4 +10,5 @@ data class CodeGroup(
     override val order: Double,
     val codeItems: List<CodeItem> = emptyList(),
     override val enabled: Boolean = true,
-) : Reorderable, Enableable
+) : Reorderable,
+    Enableable

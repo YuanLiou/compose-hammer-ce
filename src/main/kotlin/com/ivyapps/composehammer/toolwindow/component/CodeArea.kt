@@ -30,11 +30,14 @@ fun Panel.codeArea(
     }
     row {
         textArea().applyToComponent {
-            text = code.let {
-                if (minLines != null && it.isBlank()) {
-                    "\n".repeat(minLines)
-                } else it
-            }
+            text =
+                code.let {
+                    if (minLines != null && it.isBlank()) {
+                        "\n".repeat(minLines)
+                    } else {
+                        it
+                    }
+                }
             isEditable = editable
             size = Dimension(Int.MAX_VALUE, height)
             autoscrolls = true

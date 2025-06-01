@@ -21,7 +21,10 @@ import com.ivyapps.composehammer.toolwindow.screen.quickcode.QuickCodeMenu
 import com.ivyapps.composehammer.toolwindow.screen.quickcode.QuickCodeProjectDetails
 
 class ComposeHammerToolWindowFactory : ToolWindowFactory {
-    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
+    override fun createToolWindowContent(
+        project: Project,
+        toolWindow: ToolWindow
+    ) {
         val composeHammerToolWindow = ComposeHammerToolWindow(toolWindow)
         composeHammerToolWindow.navigateToMainMenu()
     }
@@ -29,8 +32,9 @@ class ComposeHammerToolWindowFactory : ToolWindowFactory {
     override fun shouldBeAvailable(project: Project) = true
 }
 
-
-class ComposeHammerToolWindow(private val toolWindow: ToolWindow) {
+class ComposeHammerToolWindow(
+    private val toolWindow: ToolWindow
+) {
     private val project = toolWindow.project
     private val contentFactory = ContentFactory.getInstance()
     private val m3service = project.service<MaterialComponentsService>()
@@ -52,38 +56,39 @@ class ComposeHammerToolWindow(private val toolWindow: ToolWindow) {
 
     private fun navigateToMaterialComponent(component: MaterialComponent) {
         navigateTo(
-            screen = MaterialComponentDetails(
-                component = component,
-                navigateToMenu = ::navigateToMainMenu
-            ),
+            screen =
+                MaterialComponentDetails(
+                    component = component,
+                    navigateToMenu = ::navigateToMainMenu
+                ),
             screenTitle = component.name
         )
     }
 
     private fun navigateToQuickCode() {
         navigateTo(
-            screen = QuickCodeMenu(
-                pluginProject = project,
-                navigateToMainMenu = ::navigateToMainMenu,
-                refreshUi = ::navigateToQuickCode,
-                navigateToProjectDetails = ::navigateToProjectDetails,
-            ),
+            screen =
+                QuickCodeMenu(
+                    pluginProject = project,
+                    navigateToMainMenu = ::navigateToMainMenu,
+                    refreshUi = ::navigateToQuickCode,
+                    navigateToProjectDetails = ::navigateToProjectDetails,
+                ),
             screenTitle = "Quick Code",
         )
     }
 
-    private fun navigateToProjectDetails(
-        project: QCProject
-    ) {
+    private fun navigateToProjectDetails(project: QCProject) {
         navigateTo(
-            screen = QuickCodeProjectDetails(
-                project = project,
-                pluginProject = this@ComposeHammerToolWindow.project,
-                navigateToQuickCodeMenu = ::navigateToQuickCode,
-                navigateToCodeItem = ::navigateToCodeItem,
-                navigateToCodeGroup = ::navigateToCodeGroup,
-                refreshUi = ::navigateToProjectDetails,
-            ),
+            screen =
+                QuickCodeProjectDetails(
+                    project = project,
+                    pluginProject = this@ComposeHammerToolWindow.project,
+                    navigateToQuickCodeMenu = ::navigateToQuickCode,
+                    navigateToCodeItem = ::navigateToCodeItem,
+                    navigateToCodeGroup = ::navigateToCodeGroup,
+                    refreshUi = ::navigateToProjectDetails,
+                ),
             screenTitle = "[Project] ${project.name}"
         )
     }
@@ -94,13 +99,14 @@ class ComposeHammerToolWindow(private val toolWindow: ToolWindow) {
         item: CodeItem?
     ) {
         navigateTo(
-            screen = QuickCodeItemDetails(
-                pluginProject = project,
-                project = qcProject,
-                codeGroup = group,
-                codeItem = item,
-                navigateToProjectDetails = ::navigateToProjectDetails,
-            ),
+            screen =
+                QuickCodeItemDetails(
+                    pluginProject = project,
+                    project = qcProject,
+                    codeGroup = group,
+                    codeItem = item,
+                    navigateToProjectDetails = ::navigateToProjectDetails,
+                ),
             screenTitle = "[${group.name}] ${item?.name ?: "New"}"
         )
     }
@@ -110,12 +116,13 @@ class ComposeHammerToolWindow(private val toolWindow: ToolWindow) {
         group: CodeGroup
     ) {
         navigateTo(
-            screen = QuickCodeGroupDetails(
-                pluginProject = project,
-                project = qcProject,
-                codeGroup = group,
-                navigateToProjectDetails = ::navigateToProjectDetails,
-            ),
+            screen =
+                QuickCodeGroupDetails(
+                    pluginProject = project,
+                    project = qcProject,
+                    codeGroup = group,
+                    navigateToProjectDetails = ::navigateToProjectDetails,
+                ),
             screenTitle = group.name
         )
     }
@@ -157,13 +164,10 @@ class ComposeHammerToolWindow(private val toolWindow: ToolWindow) {
         }
     }
 
-    private fun createContent(
-        screenTitle: Pair<ToolWindowScreen, String>
-    ): Content {
-        return contentFactory.createContent(
+    private fun createContent(screenTitle: Pair<ToolWindowScreen, String>): Content =
+        contentFactory.createContent(
             ScrollPaneFactory.createScrollPane(screenTitle.first.ui),
             screenTitle.second,
             false,
         )
-    }
 }

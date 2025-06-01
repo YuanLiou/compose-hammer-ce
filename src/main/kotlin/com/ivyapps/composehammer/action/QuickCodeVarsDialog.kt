@@ -28,37 +28,38 @@ class QuickCodeVarsDialog(
 
     private lateinit var inputs: List<Pair<String, () -> QCVariableValue>>
 
-    override fun createCenterPanel(): JComponent {
-        return ScrollPaneFactory.createScrollPane(ui())
-    }
+    override fun createCenterPanel(): JComponent = ScrollPaneFactory.createScrollPane(ui())
 
-    private fun ui() = panel {
-        group(indent = true) {
-            inputs = codeItem.variables.mapNotNull { variable ->
-                var res: Pair<String, () -> QCVariableValue>? = null
-                row {
-                    val variableName = variable.name
-                    res = when (variable) {
-                        is QCVariable.Bool -> {
-                            val checkbox = checkBox(variableName)
-                            variableName to {
-                                QCVariableValue.Bool(checkbox.component.isSelected)
-                            }
-                        }
+    private fun ui() =
+        panel {
+            group(indent = true) {
+                inputs =
+                    codeItem.variables.mapNotNull { variable ->
+                        var res: Pair<String, () -> QCVariableValue>? = null
+                        row {
+                            val variableName = variable.name
+                            res =
+                                when (variable) {
+                                    is QCVariable.Bool -> {
+                                        val checkbox = checkBox(variableName)
+                                        variableName to {
+                                            QCVariableValue.Bool(checkbox.component.isSelected)
+                                        }
+                                    }
 
-                        is QCVariable.Str -> {
-                            text(variableName)
-                            val component = textField().component
-                            variableName to {
-                                QCVariableValue.Str(component.text)
-                            }
+                                    is QCVariable.Str -> {
+                                        text(variableName)
+                                        val component = textField().component
+                                        variableName to {
+                                            QCVariableValue.Str(component.text)
+                                        }
+                                    }
+                                }
                         }
+                        res
                     }
-                }
-                res
             }
         }
-    }
 
     override fun doValidate(): ValidationInfo? {
         insetCode(inputs)
@@ -66,17 +67,21 @@ class QuickCodeVarsDialog(
     }
 
     private fun insetCode(inputs: List<Pair<String, () -> QCVariableValue>>) {
-        val variablesValues = inputs.associate { (varName, getValue) ->
-            varName to getValue()
-        }
+        val variablesValues =
+            inputs.associate { (varName, getValue) ->
+                varName to getValue()
+            }
         val compiler = QuickCodeCompiler()
-        val evaluatedTemplate = compiler.execute(
-            codeTemplate = codeItem.codeTemplate,
-            vars = variablesValues,
-        )
+        val evaluatedTemplate =
+            compiler.execute(
+                codeTemplate = codeItem.codeTemplate,
+                vars = variablesValues,
+            )
         pluginProject.service<InsertCodeService>()
             .addCode(
-                editor, file, codeItem.copy(
+                editor,
+                file,
+                codeItem.copy(
                     codeTemplate = evaluatedTemplate
                 )
             )

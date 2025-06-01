@@ -17,22 +17,27 @@ fun copyToClipboard(content: String) {
 }
 
 fun Component.addOnClickListener(onClick: () -> Unit) {
-    addMouseListener(object : MouseListener {
-        override fun mouseClicked(p0: MouseEvent?) {
-            onClick()
+    addMouseListener(
+        object : MouseListener {
+            override fun mouseClicked(p0: MouseEvent?) {
+                onClick()
+            }
+
+            override fun mousePressed(p0: MouseEvent?) {}
+
+            override fun mouseReleased(p0: MouseEvent?) {}
+
+            override fun mouseEntered(p0: MouseEvent?) {}
+
+            override fun mouseExited(p0: MouseEvent?) {}
         }
-
-        override fun mousePressed(p0: MouseEvent?) {}
-
-        override fun mouseReleased(p0: MouseEvent?) {}
-
-        override fun mouseEntered(p0: MouseEvent?) {}
-
-        override fun mouseExited(p0: MouseEvent?) {}
-    })
+    )
 }
 
-fun randomBetween(min: Double, max: Double): Double {
+fun randomBetween(
+    min: Double,
+    max: Double
+): Double {
     require(min <= max) { "Max must be greater than min" }
     return min + (Random.nextDouble() * (max - min))
 }

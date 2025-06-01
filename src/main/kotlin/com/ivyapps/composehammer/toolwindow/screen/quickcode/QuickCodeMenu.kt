@@ -22,27 +22,26 @@ class QuickCodeMenu(
     private val refreshUi: () -> Unit,
     private val navigateToProjectDetails: (QCProject) -> Unit,
 ) : QuickCodeToolWindow<QCProject?>(pluginProject) {
-
     override fun onRefreshUi(updatedItem: QCProject?) {
         refreshUi()
     }
 
-    override val ui: DialogPanel = panel {
-        group(indent = true) {
-            row {
-                button("Back") {
-                    navigateToMainMenu()
+    override val ui: DialogPanel =
+        panel {
+            group(indent = true) {
+                row {
+                    button("Back") {
+                        navigateToMainMenu()
+                    }
+                    text("⚡ Quick Code").bold()
                 }
-                text("⚡ Quick Code").bold()
+                importExport()
+                addProjectSection()
+                projects()
             }
-            importExport()
-            addProjectSection()
-            projects()
         }
-    }
 
-    private fun Panel.importExport(
-    ) {
+    private fun Panel.importExport() {
         group(
             indent = false,
             title = "Configurations"
@@ -50,10 +49,10 @@ class QuickCodeMenu(
             row {
                 label(
                     "Import an existing Quick Code configuration" +
-                            "\nor export your current one."
+                        "\nor export your current one."
                 ).comment(
                     """
-                        Tip: You can import more than one configurations.
+                    Tip: You can import more than one configurations.
                     """.trimIndent()
                 )
             }
@@ -78,7 +77,7 @@ class QuickCodeMenu(
                 label(
                     """
                     Projects contain your custom components and code snippets.
-                """.trimIndent()
+                    """.trimIndent()
                 )
             }
             row {
@@ -133,16 +132,16 @@ class QuickCodeMenu(
                                 perform {
                                     ProjectOps().editItem(
                                         item = project,
-                                        input = ProjectInput(
-                                            rawName = project.name,
-                                            enabled = checked,
-                                        )
+                                        input =
+                                            ProjectInput(
+                                                rawName = project.name,
+                                                enabled = checked,
+                                            )
                                     ).toResultEither()
                                 }
                             }
                         }
                         jCheckBox.isSelected = project.enabled
-
                     }
                     .comment("Whether the project to appear in the quick action.")
             }

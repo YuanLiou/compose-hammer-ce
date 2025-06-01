@@ -10,7 +10,9 @@ import com.intellij.psi.PsiFile
 import com.ivyapps.composehammer.domain.data.Code
 
 @Service(Service.Level.PROJECT)
-class InsertCodeService(private val project: Project) {
+class InsertCodeService(
+    private val project: Project
+) {
     private val reformatService by lazy { project.service<ReformatCodeService>() }
     private val importsService by lazy { project.service<ImportsService>() }
 

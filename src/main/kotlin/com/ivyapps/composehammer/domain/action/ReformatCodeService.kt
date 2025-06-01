@@ -9,7 +9,6 @@ import com.intellij.psi.codeStyle.CodeStyleManager
 
 @Service(Service.Level.PROJECT)
 class ReformatCodeService {
-
     fun reformatCode(
         project: Project,
         document: Document,
@@ -26,5 +25,4 @@ class ReformatCodeService {
             codeStyleManager.reformatText(psiFile, range.startOffset, range.endOffset)
         }
     }
-
 }

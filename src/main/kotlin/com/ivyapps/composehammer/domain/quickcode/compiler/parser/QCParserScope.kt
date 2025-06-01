@@ -30,14 +30,13 @@ class QCParserScope<T>(
         return null
     }
 
-    fun consumeToken(): QuickCodeToken? {
-        return tokens.getOrNull(position++).run {
+    fun consumeToken(): QuickCodeToken? =
+        tokens.getOrNull(position++).run {
             if (this is QuickCodeToken.Then) null else this
         }
-    }
 
-    fun locationDescription(): String {
-        return buildString {
+    fun locationDescription(): String =
+        buildString {
             prevToken()?.let {
                 append(it.toString())
                 append(" ")
@@ -51,22 +50,14 @@ class QCParserScope<T>(
                 append(" ")
             }
         }
-    }
 
-    fun prevToken(): QuickCodeToken? {
-        return tokens.getOrNull(position - 1)
-    }
+    fun prevToken(): QuickCodeToken? = tokens.getOrNull(position - 1)
 
-    fun currentToken(): QuickCodeToken? {
-        return tokens.getOrNull(position)
-    }
+    fun currentToken(): QuickCodeToken? = tokens.getOrNull(position)
 
-    fun nextToken(): QuickCodeToken? {
-        return tokens.getOrNull(position + 1)
-    }
+    fun nextToken(): QuickCodeToken? = tokens.getOrNull(position + 1)
 
     fun changePosition(position: Int) {
         this.position = position
     }
-
 }

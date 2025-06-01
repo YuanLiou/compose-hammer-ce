@@ -7,11 +7,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class QuickCodeConfigurationJson : Converter<QuickCodeConfiguration>() {
-    override fun toString(value: QuickCodeConfiguration): String {
-        return Json.encodeToString(value)
-    }
+    override fun toString(value: QuickCodeConfiguration): String = Json.encodeToString(value)
 
-    override fun fromString(value: String): QuickCodeConfiguration? {
-        return Json.decodeFromString(value)
-    }
+    override fun fromString(value: String): QuickCodeConfiguration? = Json.decodeFromString(value)
 }

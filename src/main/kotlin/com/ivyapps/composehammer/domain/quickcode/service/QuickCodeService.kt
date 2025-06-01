@@ -14,7 +14,9 @@ import com.ivyapps.composehammer.persistence.QuickCodePersistence
 import com.ivyapps.composehammer.sortedByOrder
 
 @Service(Service.Level.PROJECT)
-class QuickCodeService(project: Project) {
+class QuickCodeService(
+    project: Project
+) {
     private val persistence = project.service<QuickCodePersistence>()
 
     val configuration: QuickCodeConfiguration
@@ -24,32 +26,35 @@ class QuickCodeService(project: Project) {
         get() = configuration.projects.sortedByOrder()
 
     val enabledGroups: List<CodeGroup>
-        get() = projects
-            .filter { it.enabled }
-            .flatMap { it.groups }
-            .sortedByOrder()
+        get() =
+            projects
+                .filter { it.enabled }
+                .flatMap { it.groups }
+                .sortedByOrder()
 
     fun hasDefinedCustomTemplates() = persistence.state.configuration.projects.isNotEmpty()
 
-    fun findProjectByName(name: String): QCProject {
-        return requireNotNull(projects.find { it.name == name }) {
+    fun findProjectByName(name: String): QCProject =
+        requireNotNull(projects.find { it.name == name }) {
             "Project with name '$name' doesn't exists."
         }
-    }
 
-    fun findGroupByName(name: String): CodeGroup {
-        return requireNotNull(projects.firstNotNullOfOrNull { project ->
-            project.groups.find { it.name == name }
-        }) {
+    fun findGroupByName(name: String): CodeGroup =
+        requireNotNull(
+            projects.firstNotNullOfOrNull { project ->
+                project.groups.find { it.name == name }
+            }
+        ) {
             "CodeGroup with name '$name' doesn't exists."
         }
-    }
 
-    fun findCodeItemByName(group: CodeGroup, name: String): CodeItem {
-        return requireNotNull(group.codeItems.find { it.name == name }) {
+    fun findCodeItemByName(
+        group: CodeGroup,
+        name: String
+    ): CodeItem =
+        requireNotNull(group.codeItems.find { it.name == name }) {
             "CodeItem with name '$name' doesn't exists in ${group.codeItems}."
         }
-    }
 
     // region Project operations
     data class ProjectInput(
@@ -66,8 +71,9 @@ class QuickCodeService(project: Project) {
             order: Double,
             existingItem: QCProject?,
         ): MaybeValid<QCProject> {
-            val name = input.rawName.notBlankAndTrimmed()
-                ?: return Invalid("Invalid project name: ${input.rawName}")
+            val name =
+                input.rawName.notBlankAndTrimmed()
+                    ?: return Invalid("Invalid project name: ${input.rawName}")
             return Valid(
                 QCProject(
                     name = name,
@@ -78,9 +84,10 @@ class QuickCodeService(project: Project) {
             )
         }
 
-        override fun copyWithNewOrder(item: QCProject, newOrder: Double): QCProject {
-            return item.copy(order = newOrder)
-        }
+        override fun copyWithNewOrder(
+            item: QCProject,
+            newOrder: Double
+        ): QCProject = item.copy(order = newOrder)
 
         override fun updateState(updatedItems: List<QCProject>) {
             updateProjects(updatedItems)
@@ -106,17 +113,19 @@ class QuickCodeService(project: Project) {
             )
         }
 
-        override fun copyWithNewOrder(item: CodeGroup, newOrder: Double): CodeGroup {
-            return item.copy(order = newOrder)
-        }
+        override fun copyWithNewOrder(
+            item: CodeGroup,
+            newOrder: Double
+        ): CodeGroup = item.copy(order = newOrder)
 
         override fun createItem(
             input: CodeGroupInput,
             order: Double,
             existingItem: CodeGroup?,
         ): MaybeValid<CodeGroup> {
-            val name = input.rawName.notBlankAndTrimmed()
-                ?: return Invalid("Invalid project name: ${input.rawName}")
+            val name =
+                input.rawName.notBlankAndTrimmed()
+                    ?: return Invalid("Invalid project name: ${input.rawName}")
             return Valid(
                 CodeGroup(
                     name = name,
@@ -134,9 +143,7 @@ class QuickCodeService(project: Project) {
         val rawName: String,
         val rawImports: String,
         val rawCode: String,
-    ) {
-
-    }
+    )
 
     inner class CodeItemOps(
         val project: QCProject,
@@ -149,53 +156,56 @@ class QuickCodeService(project: Project) {
             updateCodeItems(project, group, updatedItems)
         }
 
-        override fun copyWithNewOrder(item: CodeItem, newOrder: Double): CodeItem {
-            return item.copy(order = newOrder)
-        }
+        override fun copyWithNewOrder(
+            item: CodeItem,
+            newOrder: Double
+        ): CodeItem = item.copy(order = newOrder)
 
         override fun createItem(
             input: CodeItemInput,
             order: Double,
             existingItem: CodeItem?,
-        ): MaybeValid<CodeItem> = with(input) {
-            val name = rawName.notBlankAndTrimmed()
-                ?: return@with Invalid("Invalid name: '$rawName'")
-            val code = rawCode.notBlankAndTrimmed()
-                ?: return@with Invalid("The code can't be blank!")
+        ): MaybeValid<CodeItem> =
+            with(input) {
+                val name =
+                    rawName.notBlankAndTrimmed()
+                        ?: return@with Invalid("Invalid name: '$rawName'")
+                val code =
+                    rawCode.notBlankAndTrimmed()
+                        ?: return@with Invalid("The code can't be blank!")
 
-            // TODO: Support QuickCode in imports?
-            val imports = rawImports.replace("import", "")
-                .split("\n")
-                .mapNotNull {
-                    it.trim().takeIf(String::isNotBlank)
-                }
+                // TODO: Support QuickCode in imports?
+                val imports =
+                    rawImports.replace("import", "")
+                        .split("\n")
+                        .mapNotNull {
+                            it.trim().takeIf(String::isNotBlank)
+                        }
 
-            val qcCompiler = QuickCodeCompiler()
-            val variables = when (val res = qcCompiler.compile(code)) {
-                is QuickCodeCompiler.CompilationResult.Invalid -> return@with Invalid(
-                    "Invalid code - compilation error: ${res.errMsg}"
+                val qcCompiler = QuickCodeCompiler()
+                val variables =
+                    when (val res = qcCompiler.compile(code)) {
+                        is QuickCodeCompiler.CompilationResult.Invalid -> return@with Invalid(
+                            "Invalid code - compilation error: ${res.errMsg}"
+                        )
+
+                        is QuickCodeCompiler.CompilationResult.Valid -> res.variables
+                    }
+
+                return Valid(
+                    CodeItem(
+                        name = name,
+                        imports = imports,
+                        codeTemplate = code,
+                        variables = variables,
+                        order = order,
+                    )
                 )
-
-                is QuickCodeCompiler.CompilationResult.Valid -> res.variables
             }
-
-            return Valid(
-                CodeItem(
-                    name = name,
-                    imports = imports,
-                    codeTemplate = code,
-                    variables = variables,
-                    order = order,
-                )
-            )
-        }
-
     }
     // endregion
 
-    private fun updateProjects(
-        updated: List<QCProject>,
-    ) {
+    private fun updateProjects(updated: List<QCProject>,) {
         configuration.projects.clear()
         configuration.projects.addAll(updated)
     }
@@ -205,9 +215,11 @@ class QuickCodeService(project: Project) {
         updatedGroups: List<CodeGroup>
     ) {
         updateProjects(
-            updated = projects.withRemoved(project) + project.copy(
-                groups = updatedGroups
-            )
+            updated =
+                projects.withRemoved(project) +
+                    project.copy(
+                        groups = updatedGroups
+                    )
         )
     }
 
@@ -218,9 +230,11 @@ class QuickCodeService(project: Project) {
     ) {
         updateGroups(
             project = project,
-            updatedGroups = project.groups.withRemoved(group) + group.copy(
-                codeItems = updatedItems
-            )
+            updatedGroups =
+                project.groups.withRemoved(group) +
+                    group.copy(
+                        codeItems = updatedItems
+                    )
         )
     }
 }

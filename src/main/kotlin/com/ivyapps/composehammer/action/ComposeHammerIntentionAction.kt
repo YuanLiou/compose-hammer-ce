@@ -14,21 +14,34 @@ import com.ivyapps.composehammer.domain.RecognizerService
 import com.ivyapps.composehammer.domain.action.InsertCodeService
 import javax.swing.Icon
 
-
-class ComposeHammerIntentionAction : IntentionAction, HighPriorityAction, Iconable {
+class ComposeHammerIntentionAction :
+    IntentionAction,
+    HighPriorityAction,
+    Iconable {
     override fun getText() = "Compose Hammer"
-    override fun getFamilyName() = "Compose Hammer"
-    override fun getIcon(flags: Int): Icon = IconLoader.getIcon(
-        "/logo_small.svg",
-        this@ComposeHammerIntentionAction::class.java.classLoader
-    )
 
-    override fun isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean {
+    override fun getFamilyName() = "Compose Hammer"
+
+    override fun getIcon(flags: Int): Icon =
+        IconLoader.getIcon(
+            "/logo_small.svg",
+            this@ComposeHammerIntentionAction::class.java.classLoader
+        )
+
+    override fun isAvailable(
+        project: Project,
+        editor: Editor,
+        file: PsiFile
+    ): Boolean {
         val service = project.service<RecognizerService>()
         return service.isComposeFile(editor, file)
     }
 
-    override fun invoke(project: Project, editor: Editor, file: PsiFile) {
+    override fun invoke(
+        project: Project,
+        editor: Editor,
+        file: PsiFile
+    ) {
         val componentsService = project.service<MaterialComponentsService>()
         val insertService = project.service<InsertCodeService>()
 

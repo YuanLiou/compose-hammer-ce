@@ -1,20 +1,22 @@
 package com.ivyapps.composehammer.domain.quickcode.compiler.parser
 
-import com.ivyapps.composehammer.domain.quickcode.compiler.data.*
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.IfStatement
 import com.ivyapps.composehammer.domain.quickcode.compiler.data.IfStatement.Condition
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.QuickCodeAst
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.QuickCodeToken
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.RawText
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.Variable
+import kotlin.collections.joinToString
 
 class QuickCodeParser {
-    fun parse(tokens: List<QuickCodeToken>): ParseResult {
-        return try {
+    fun parse(tokens: List<QuickCodeToken>): ParseResult =
+        try {
             ParseResult.Success(parseInternal(tokens))
         } catch (e: Exception) {
             ParseResult.Failure(e.message ?: "unknown error")
         }
-    }
 
-    private fun parseInternal(
-        tokens: List<QuickCodeToken>,
-    ): QuickCodeAst.Begin {
+    private fun parseInternal(tokens: List<QuickCodeToken>,): QuickCodeAst.Begin {
         val astBuilder = AstBuilder()
         val parserScope = QCParserScope<QuickCodeAst>(tokens, initialPosition = 0)
 
@@ -27,7 +29,6 @@ class QuickCodeParser {
         }
         return astBuilder.begin
     }
-
 
     private fun QCParserScope<QuickCodeAst>.parseToken(
         astBuilder: AstBuilder,
@@ -52,37 +53,44 @@ class QuickCodeParser {
         }
     }
 
-    private fun QCParserScope<QuickCodeAst>.parseIfStatement(
-        ast: AstBuilder
-    ) {
+    private fun QCParserScope<QuickCodeAst>.parseIfStatement(ast: AstBuilder) {
         val condition = parseIfCondition()
 
         val thenAst = AstBuilder()
-        val thenEnd = parseUntil(
-            ast = thenAst,
-            end = listOf(QuickCodeToken.ElseIf, QuickCodeToken.Else, QuickCodeToken.EndIf)
-        )
+        val thenEnd =
+            parseUntil(
+                ast = thenAst,
+                end = listOf(QuickCodeToken.ElseIf, QuickCodeToken.Else, QuickCodeToken.EndIf)
+            )
 
-        val elseAst = when (thenEnd) {
-            QuickCodeToken.ElseIf -> AstBuilder().apply {
-                parseIfStatement(this)
+        val elseAst =
+            when (thenEnd) {
+                QuickCodeToken.ElseIf -> {
+                    AstBuilder().apply {
+                        parseIfStatement(this)
+                    }
+                }
+
+                QuickCodeToken.Else -> {
+                    AstBuilder().apply {
+                        parseUntil(
+                            ast = this,
+                            end = listOf(QuickCodeToken.EndIf)
+                        )
+                    }
+                }
+
+                else -> {
+                    null
+                }
             }
 
-            QuickCodeToken.Else -> AstBuilder().apply {
-                parseUntil(
-                    ast = this,
-                    end = listOf(QuickCodeToken.EndIf)
-                )
-            }
-
-            else -> null
-        }
-
-        val ifStm = IfStatement(
-            condition = condition,
-            thenBranch = thenAst.begin,
-            elseBranch = elseAst?.begin,
-        )
+        val ifStm =
+            IfStatement(
+                condition = condition,
+                thenBranch = thenAst.begin,
+                elseBranch = elseAst?.begin,
+            )
         ast.addNode(ifStm)
     }
 
@@ -102,15 +110,15 @@ class QuickCodeParser {
         }
     }
 
-    private fun QCParserScope<QuickCodeAst>.parseIfCondition(
-    ): Condition {
+    private fun QCParserScope<QuickCodeAst>.parseIfCondition(): Condition {
         val parser = QuickCodeIfConditionParser(tokens)
-        val (condition, newPos) = requireNotNull(parser.parse(position)) {
-            """
+        val (condition, newPos) =
+            requireNotNull(parser.parse(position)) {
+                """
                 Invalid if condition! At '${locationDescription()}'.
                 Check for errors in the variables like '{' instead of '{{'.
-            """.trimIndent()
-        }
+                """.trimIndent()
+            }
         changePosition(newPos)
         return condition
     }
@@ -125,4 +133,3 @@ class QuickCodeParser {
         }
     }
 }
-

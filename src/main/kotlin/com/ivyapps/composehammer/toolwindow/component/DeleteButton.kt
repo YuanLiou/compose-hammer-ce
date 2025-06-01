@@ -10,32 +10,32 @@ class DeleteButton {
         row: Row,
         notConfirmedLabel: String = "Delete",
         onDelete: () -> Unit,
-    ): Unit = with(row) {
-        var button: JButton? = null
-        button(notConfirmedLabel) {
-            when (confirmation) {
-                ConfirmationStage.NotConfirmed -> {
-                    button?.text = "Confirm, deletion?"
-                    confirmation = ConfirmationStage.ConfirmedOnce
-                }
+    ): Unit =
+        with(row) {
+            var button: JButton? = null
+            button(notConfirmedLabel) {
+                when (confirmation) {
+                    ConfirmationStage.NotConfirmed -> {
+                        button?.text = "Confirm, deletion?"
+                        confirmation = ConfirmationStage.ConfirmedOnce
+                    }
 
-                ConfirmationStage.ConfirmedOnce -> {
-                    button?.text = "[DANGER] DELETE PERMANENTLY!"
-                    confirmation = ConfirmationStage.ConfirmedTwice
-                }
+                    ConfirmationStage.ConfirmedOnce -> {
+                        button?.text = "[DANGER] DELETE PERMANENTLY!"
+                        confirmation = ConfirmationStage.ConfirmedTwice
+                    }
 
-                ConfirmationStage.ConfirmedTwice -> {
-                    button?.text = notConfirmedLabel
-                    confirmation = ConfirmationStage.NotConfirmed
-                    onDelete()
+                    ConfirmationStage.ConfirmedTwice -> {
+                        button?.text = notConfirmedLabel
+                        confirmation = ConfirmationStage.NotConfirmed
+                        onDelete()
+                    }
                 }
+            }.also {
+                button = it.component
             }
-        }.also {
-            button = it.component
         }
-    }
 }
-
 
 enum class ConfirmationStage {
     NotConfirmed,

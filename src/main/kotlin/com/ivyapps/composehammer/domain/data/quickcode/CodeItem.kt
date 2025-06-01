@@ -11,7 +11,8 @@ data class CodeItem(
     val codeTemplate: String,
     val variables: List<QCVariable> = emptyList(),
     override val order: Double,
-) : Code, Reorderable {
+) : Code,
+    Reorderable {
     override val menuName: String
         get() = name
 

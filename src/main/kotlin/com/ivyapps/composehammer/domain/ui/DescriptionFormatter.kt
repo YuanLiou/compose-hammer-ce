@@ -1,9 +1,10 @@
 package com.ivyapps.composehammer.domain.ui
 
 fun String.formatText(maxLineLength: Int = 35): String {
-    val words = this.replace("\n", " ")
-        .split(" ")
-        .filter { it.isNotBlank() }
+    val words =
+        this.replace("\n", " ")
+            .split(" ")
+            .filter { it.isNotBlank() }
 
     return buildString {
         var lineLength = 0
@@ -12,9 +13,11 @@ fun String.formatText(maxLineLength: Int = 35): String {
                 append("<br>")
                 lineLength = 0
             }
-            append(word.run {
-                if (firstOrNull() == '>' && length > 1) drop(1) else this
-            })
+            append(
+                word.run {
+                    if (firstOrNull() == '>' && length > 1) drop(1) else this
+                }
+            )
             lineLength += word.length
             if (lineLength > maxLineLength) {
                 append('\n')
