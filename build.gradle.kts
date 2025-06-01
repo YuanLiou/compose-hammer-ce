@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.spotless)
 }
 
 val isSnapshot = properties("snapshot").get().toBoolean()
@@ -34,9 +35,14 @@ repositories {
     }
 }
 
+buildscript {
+    dependencies {
+        classpath(libs.spotless.gradle.plugin)
+    }
+}
+
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-//    implementation(libs.annotations)
     implementation(libs.kotlinx.serializationJson)
     testImplementation("junit:junit:4.13.2")
 
@@ -161,5 +167,22 @@ tasks {
         println("Start cleaning... build Dir")
         delete(rootProject.layout.buildDirectory)
         println("Clean finished")
+    }
+}
+
+spotless {
+    val ktlintVersion = libs.versions.ktlintCli.get()
+
+    kotlin {
+        target("**/*.kt")
+        targetExclude("${layout.buildDirectory}/**/*.kt")
+        ktlint(ktlintVersion).setEditorConfigPath(rootProject.file(".editorconfig").path)
+        toggleOffOn()
+        trimTrailingWhitespace()
+    }
+
+    kotlinGradle {
+        target("**/*.gradle.kts")
+        ktlint(ktlintVersion)
     }
 }
