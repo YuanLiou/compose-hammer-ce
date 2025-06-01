@@ -85,9 +85,9 @@ intellijPlatform {
         name = "Compose Hammer CE"
         version = pluginVersionName
         vendor {
-            name = "louis383"
-            url = "https://github.com/YuanLiou/compose-hammer-ce"
-            email = "louis383@gmail.com"
+            name = "original author: ivyapps"
+            url = "http://ivy-apps.com"
+            email = "iliyan.germanov971@gmail.com"
         }
     }
 }

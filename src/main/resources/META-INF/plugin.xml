@@ -3,9 +3,9 @@
     <id>com.ivyapps.composehammer</id>
     <name>Compose Hammer CE</name>
     <vendor
-            url="https://github.com/YuanLiou/compose-hammer-ce"
-            email="louis383@gmail.com">
-        louis383
+            url="http://ivy-apps.com"
+            email="iliyan.germanov971@gmail.com">
+        original author: ivyapps
     </vendor>
 
     <depends>com.intellij.modules.platform</depends>
