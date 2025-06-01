@@ -11,7 +11,6 @@
     <depends>com.intellij.modules.platform</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
-
     <extensions defaultExtensionNs="com.intellij">
         <projectService serviceImplementation="com.ivyapps.composehammer.persistence.QuickCodePersistence"/>
 
@@ -20,18 +19,19 @@
                 id="Compose Hammer"
                 anchor="right"
                 icon="/logo_small.svg"
-                largeStripeAnchor="right"
                 doNotActivateOnStart="false"
                 secondary="false"/>
 
         <intentionAction>
             <className>com.ivyapps.composehammer.action.ComposeHammerIntentionAction</className>
             <category>Compose Hammer</category>
+            <skipBeforeAfter>true</skipBeforeAfter>
         </intentionAction>
 
         <intentionAction>
             <className>com.ivyapps.composehammer.action.QuickCodeIntentionAction</className>
             <category>Quick Code</category>
+            <skipBeforeAfter>true</skipBeforeAfter>
         </intentionAction>
     </extensions>
 </idea-plugin>
