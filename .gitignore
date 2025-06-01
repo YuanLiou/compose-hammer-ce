@@ -8,6 +8,7 @@ build
 .intellijPlatform/
 .intellijPlatform/*
 .kotlin
+java_*.hprof
 
 ### Java template
 # Compiled class file

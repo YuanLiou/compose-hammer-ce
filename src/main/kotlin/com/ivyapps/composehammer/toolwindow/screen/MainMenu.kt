@@ -17,27 +17,28 @@ class MainMenu(
     private val navigateToMaterialComponent: (MaterialComponent) -> Unit,
     private val navigateToCustomCodeMenu: () -> Unit,
 ) : ToolWindowScreen {
-    override val ui: DialogPanel = panel {
-        customSection()
+    override val ui: DialogPanel =
+        panel {
+            customSection()
 //        contentDebugInfo(service)
-        for (group in service.content.filter { it.showInToolWindow }) {
-            collapsibleGroup(
-                title = group.title,
-                indent = true
-            ) {
-                group.components.filter {
-                    it.showInToolWindow
-                }.forEach { component ->
-                    componentUi(component)
+            for (group in service.content.filter { it.showInToolWindow }) {
+                collapsibleGroup(
+                    title = group.title,
+                    indent = true
+                ) {
+                    group.components.filter {
+                        it.showInToolWindow
+                    }.forEach { component ->
+                        componentUi(component)
+                    }
+                }.apply {
+                    expanded = false
                 }
-            }.apply {
-                expanded = false
             }
+            altEnterTip(indent = true)
+            reviewAndTelegramPrompt(indent = true)
+            unresolvedImportsTip(indent = true)
         }
-        altEnterTip(indent = true)
-        reviewAndTelegramPrompt(indent = true)
-        unresolvedImportsTip(indent = true)
-    }
 
     private fun Panel.componentUi(component: MaterialComponent) {
         group(indent = false) {
@@ -74,7 +75,7 @@ class MainMenu(
             row {
                 label(
                     "Create and manage your custom components\n" +
-                            "for the \"⚡ Quick Code\" Alt/Option+Enter action."
+                        "for the \"⚡ Quick Code\" Alt/Option+Enter action."
                 ).component.addOnClickListener(navigateToCustomCodeMenu)
             }
             row {

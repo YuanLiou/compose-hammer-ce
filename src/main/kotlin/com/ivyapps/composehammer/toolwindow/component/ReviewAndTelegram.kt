@@ -3,9 +3,7 @@ package com.ivyapps.composehammer.toolwindow.component
 import com.intellij.icons.AllIcons
 import com.intellij.ui.dsl.builder.Panel
 
-fun Panel.reviewAndTelegramPrompt(
-    indent: Boolean
-) {
+fun Panel.reviewAndTelegramPrompt(indent: Boolean) {
     group(indent = indent) {
         row {
             icon(AllIcons.General.Balloon)

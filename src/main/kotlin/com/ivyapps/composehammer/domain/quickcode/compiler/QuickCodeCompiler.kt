@@ -1,7 +1,11 @@
 package com.ivyapps.composehammer.domain.quickcode.compiler
 
 import com.ivyapps.composehammer.domain.data.quickcode.QCVariable
-import com.ivyapps.composehammer.domain.quickcode.compiler.data.*
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.IfStatement
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.QCVariableValue
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.QuickCodeAst
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.RawText
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.Variable
 import com.ivyapps.composehammer.domain.quickcode.compiler.parser.ParseResult
 import com.ivyapps.composehammer.domain.quickcode.compiler.parser.QuickCodeParser
 
@@ -15,7 +19,10 @@ class QuickCodeCompiler {
     ): String {
         val tokens = lexer.tokenize(codeTemplate)
         return when (val res = parser.parse(tokens)) {
-            is ParseResult.Failure -> codeTemplate
+            is ParseResult.Failure -> {
+                codeTemplate
+            }
+
             is ParseResult.Success -> {
                 val interpreter = QuickCodeInterpreter(vars)
                 interpreter.evaluate(res.ast)
@@ -26,12 +33,16 @@ class QuickCodeCompiler {
     fun compile(codeTemplate: String): CompilationResult {
         val tokens = lexer.tokenize(codeTemplate)
         return when (val res = parser.parse(tokens)) {
-            is ParseResult.Failure -> CompilationResult.Invalid(res.errorMsg)
+            is ParseResult.Failure -> {
+                CompilationResult.Invalid(res.errorMsg)
+            }
+
             is ParseResult.Success -> {
                 CompilationResult.Valid(
                     ast = res.ast,
-                    variables = res.ast.extractAllVars()
-                        .fixVariableConflicts()
+                    variables =
+                        res.ast.extractAllVars()
+                            .fixVariableConflicts()
                 )
             }
         }
@@ -56,24 +67,29 @@ class QuickCodeCompiler {
         return res
     }
 
-    private fun QuickCodeAst.extractAllVars(): List<QCVariable> {
-        return when (this) {
-            is QuickCodeAst.Begin -> emptyList()
-            is IfStatement -> {
-                condition.extractBoolVars() +
-                        thenBranch.extractAllVars() +
-                        (elseBranch?.extractAllVars() ?: emptyList())
+    private fun QuickCodeAst.extractAllVars(): List<QCVariable> =
+        when (this) {
+            is QuickCodeAst.Begin -> {
+                emptyList()
             }
 
-            is RawText -> emptyList()
+            is IfStatement -> {
+                condition.extractBoolVars() +
+                    thenBranch.extractAllVars() +
+                    (elseBranch?.extractAllVars() ?: emptyList())
+            }
+
+            is RawText -> {
+                emptyList()
+            }
+
             is Variable -> {
                 listOf(QCVariable.Str(name))
             }
         } + (next?.extractAllVars() ?: emptyList())
-    }
 
-    private fun IfStatement.Condition.extractBoolVars(): List<QCVariable.Bool> {
-        return when (this) {
+    private fun IfStatement.Condition.extractBoolVars(): List<QCVariable.Bool> =
+        when (this) {
             is IfStatement.Condition.And -> {
                 cond1.extractBoolVars() + cond2.extractBoolVars()
             }
@@ -94,7 +110,6 @@ class QuickCodeCompiler {
                 cond1.extractBoolVars() + cond2.extractBoolVars()
             }
         }
-    }
 
     sealed interface CompilationResult {
         data class Valid(
@@ -102,6 +117,8 @@ class QuickCodeCompiler {
             val variables: List<QCVariable>
         ) : CompilationResult
 
-        data class Invalid(val errMsg: String) : CompilationResult
+        data class Invalid(
+            val errMsg: String
+        ) : CompilationResult
     }
 }

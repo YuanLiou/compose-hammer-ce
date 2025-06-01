@@ -25,7 +25,6 @@ class QuickCodeProjectDetails(
     private val navigateToCodeGroup: (QCProject, CodeGroup) -> Unit,
     private val refreshUi: (QCProject) -> Unit,
 ) : QuickCodeToolWindow<QCProject?>(pluginProject) {
-
     override fun onRefreshUi(updatedItem: QCProject?) {
         if (updatedItem != null) {
             refreshUi(updatedItem)
@@ -35,18 +34,19 @@ class QuickCodeProjectDetails(
         }
     }
 
-    override val ui: DialogPanel = panel {
-        group(indent = true) {
-            row {
-                button("Back") {
-                    navigateToQuickCodeMenu()
+    override val ui: DialogPanel =
+        panel {
+            group(indent = true) {
+                row {
+                    button("Back") {
+                        navigateToQuickCodeMenu()
+                    }
                 }
+                projectName()
+                addCodeGroupSection()
             }
-            projectName()
-            addCodeGroupSection()
+            codeGroups()
         }
-        codeGroups()
-    }
 
     private fun Panel.projectName() {
         row {
@@ -65,10 +65,11 @@ class QuickCodeProjectDetails(
                 perform {
                     ProjectOps().editItem(
                         item = project,
-                        input = ProjectInput(
-                            rawName = inputField.text,
-                            enabled = project.enabled,
-                        )
+                        input =
+                            ProjectInput(
+                                rawName = inputField.text,
+                                enabled = project.enabled,
+                            )
                     ).toResultEither()
                 }
             }
@@ -83,8 +84,8 @@ class QuickCodeProjectDetails(
             row {
                 label(
                     """
-                        Code groups are groups of code snippets.
-                        They appear in the "Quick Code" quick action.
+                    Code groups are groups of code snippets.
+                    They appear in the "Quick Code" quick action.
                     """.trimIndent()
                 )
             }
@@ -176,9 +177,7 @@ class QuickCodeProjectDetails(
         )
     }
 
-    private fun Panel.codeGroupItems(
-        group: CodeGroup,
-    ) {
+    private fun Panel.codeGroupItems(group: CodeGroup,) {
         val codeItems = group.codeItems
         group(indent = false) {
             row {
@@ -236,5 +235,4 @@ class QuickCodeProjectDetails(
             }
         }
     }
-
 }

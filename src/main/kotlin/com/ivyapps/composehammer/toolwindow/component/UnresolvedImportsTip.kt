@@ -3,9 +3,7 @@ package com.ivyapps.composehammer.toolwindow.component
 import com.intellij.icons.AllIcons
 import com.intellij.ui.dsl.builder.Panel
 
-fun Panel.unresolvedImportsTip(
-    indent: Boolean,
-) {
+fun Panel.unresolvedImportsTip(indent: Boolean,) {
     group(indent = indent) {
         row {
             icon(AllIcons.Actions.QuickfixBulb)
@@ -20,11 +18,12 @@ fun Panel.unresolvedImportsTip(
         }
         codeArea(
             title = "Material3 dependencies",
-            code = """
+            code =
+                """
                 // Make sure to use the latest stable material3 version!
                 implementation("androidx.compose.material3:material3:1.1.0")
                 implementation("androidx.compose.material3:material3-window-size-class:1.1.0")
-            """.trimIndent(),
+                """.trimIndent(),
             tip = "Use the latest stable version from the link above."
         )
         row {

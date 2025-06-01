@@ -12,7 +12,6 @@ import com.ivyapps.composehammer.showErrorToast
 import com.ivyapps.composehammer.showInfoToast
 import java.io.File
 
-
 @Service(Service.Level.PROJECT)
 class ExportQuickCodeService(
     private val project: Project
@@ -39,7 +38,10 @@ class ExportQuickCodeService(
         return QuickCodeConfigurationJson().toString(quickCodeService.configuration)
     }
 
-    private fun exportStringToFile(chosenDir: VirtualFile, content: String) {
+    private fun exportStringToFile(
+        chosenDir: VirtualFile,
+        content: String
+    ) {
         try {
             val file = File(chosenDir.path, OUTPUT_FILE_NAME)
             file.writeText(content)

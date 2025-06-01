@@ -17,23 +17,25 @@ data class QuickCodeState(
     storages = [Storage("ComposeHammerQuickCode_v3.xml")]
 )
 class QuickCodePersistence : PersistentStateComponent<QuickCodeState> {
-
     private var internalState = QuickCodeState()
 
     override fun getState(): QuickCodeState = internalState
 
     override fun loadState(state: QuickCodeState) {
-        internalState = state.copy(
-            configuration = state.configuration.copy(
-                projects = state.configuration.projects
-                    .map {
-                        it.copy(
-                            groups = it.groups.sortedByOrder()
-                        )
-                    }
-                    .sortedByOrder()
-                    .toMutableList(),
-            ),
-        )
+        internalState =
+            state.copy(
+                configuration =
+                    state.configuration.copy(
+                        projects =
+                            state.configuration.projects
+                                .map {
+                                    it.copy(
+                                        groups = it.groups.sortedByOrder()
+                                    )
+                                }
+                                .sortedByOrder()
+                                .toMutableList(),
+                    ),
+            )
     }
 }

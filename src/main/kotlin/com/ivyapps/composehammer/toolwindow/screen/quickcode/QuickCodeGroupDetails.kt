@@ -16,46 +16,47 @@ class QuickCodeGroupDetails(
     private val codeGroup: CodeGroup,
     private val navigateToProjectDetails: (QCProject) -> Unit,
 ) : QuickCodeToolWindow<CodeGroup?>(pluginProject) {
-
     override fun onRefreshUi(updatedItem: CodeGroup?) {
         navigateToProjectDetails(service.findProjectByName(project.name))
     }
 
-    override val ui: DialogPanel = panel {
-        group(
-            indent = true
-        ) {
-            var nameInput: JBTextField? = null
+    override val ui: DialogPanel =
+        panel {
+            group(
+                indent = true
+            ) {
+                var nameInput: JBTextField? = null
 
-            row {
-                button("Back") {
-                    navigateToProjectDetails(project)
-                }
-            }
-            row {
-                text("Name").bold()
-            }
-            row {
-                textField()
-                    .also {
-                        nameInput = it.component
+                row {
+                    button("Back") {
+                        navigateToProjectDetails(project)
                     }
-                    .text(codeGroup.name)
-                    .comment("The name of the code group.")
-                    .bold()
-            }
-            row {
-                button("Rename") {
-                    perform {
-                        CodeGroupOps(project).editItem(
-                            item = codeGroup,
-                            input = CodeGroupInput(
-                                rawName = nameInput!!.text,
-                            )
-                        ).toResultEither()
+                }
+                row {
+                    text("Name").bold()
+                }
+                row {
+                    textField()
+                        .also {
+                            nameInput = it.component
+                        }
+                        .text(codeGroup.name)
+                        .comment("The name of the code group.")
+                        .bold()
+                }
+                row {
+                    button("Rename") {
+                        perform {
+                            CodeGroupOps(project).editItem(
+                                item = codeGroup,
+                                input =
+                                    CodeGroupInput(
+                                        rawName = nameInput!!.text,
+                                    )
+                            ).toResultEither()
+                        }
                     }
                 }
             }
         }
-    }
 }

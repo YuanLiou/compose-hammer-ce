@@ -13,22 +13,23 @@ fun Editor.showOptionsPopup(
     onChosen: (String) -> Unit
 ) {
     var popup: JBPopup? = null
-    popup = JBPopupFactory.getInstance()
-        .createPopupChooserBuilder(
-            if (backItemLast) {
-                items + backItem
-            } else {
-                listOf(backItem) + items
+    popup =
+        JBPopupFactory.getInstance()
+            .createPopupChooserBuilder(
+                if (backItemLast) {
+                    items + backItem
+                } else {
+                    listOf(backItem) + items
+                }
+            )
+            .setTitle(title)
+            .setItemChosenCallback {
+                if (it != backItem) {
+                    onChosen(it)
+                } else {
+                    onBack(popup!!)
+                }
             }
-        )
-        .setTitle(title)
-        .setItemChosenCallback {
-            if (it != backItem) {
-                onChosen(it)
-            } else {
-                onBack(popup!!)
-            }
-        }
-        .createPopup()
+            .createPopup()
     popup.showInBestPositionFor(this)
 }

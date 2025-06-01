@@ -13,12 +13,12 @@ fun Panel.image(
     onClick: (() -> Unit)? = null,
 ) {
     row(
-        label = JBLabel(ImageIcon(imageFileName.toImagePath())).apply {
-            if (onClick != null) {
-                addOnClickListener(onClick = onClick)
+        label =
+            JBLabel(ImageIcon(imageFileName.toImagePath())).apply {
+                if (onClick != null) {
+                    addOnClickListener(onClick = onClick)
+                }
             }
-
-        }
     ) {}.layout(RowLayout.PARENT_GRID)
 }
 

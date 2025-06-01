@@ -17,7 +17,6 @@ import com.ivyapps.composehammer.domain.quickcode.service.AddOperationResult
 import com.ivyapps.composehammer.domain.quickcode.service.BaseOperations
 import com.ivyapps.composehammer.domain.quickcode.service.EditOperationResult
 import com.ivyapps.composehammer.domain.quickcode.service.QuickCodeService
-import com.ivyapps.composehammer.domain.quickcode.service.QuickCodeService.*
 import com.ivyapps.composehammer.domain.ui.generateImportsCode
 import com.ivyapps.composehammer.persistence.QuickCodeConfigurationJson
 import com.ivyapps.composehammer.showErrorToast
@@ -29,7 +28,6 @@ class ImportQuickCodeService(
     private val project: Project,
 ) {
     private val service = project.service<QuickCodeService>()
-
 
     fun import() {
         chooseFileAndImport()
@@ -63,43 +61,48 @@ class ImportQuickCodeService(
             importConfiguration(configuration)
         } catch (e: Exception) {
             showErrorToast(
-                message = """
+                message =
+                    """
                     Error: ${e.message ?: "Unknown"}.
                     Failed to parse: \"$quickCodeJson\".
-                """.trimIndent(),
+                    """.trimIndent(),
             )
         }
     }
 
     private fun importConfiguration(configuration: QuickCodeConfiguration) {
         with(service) {
-            val result = configuration.projects.flatMap {
-                val projectOps = ProjectOps()
-                projectOps.importProject(it)
-            }
+            val result =
+                configuration.projects.flatMap {
+                    val projectOps = ProjectOps()
+                    projectOps.importProject(it)
+                }
             showInfoToast(
-                title = when {
-                    result.all { it is Either.Right } -> "Import Successful"
-                    result.any { it is Either.Left } -> "Partial Success"
-                    else -> "Import Failed"
-                },
-                message = result
-                    .sortedBy { it is Either.Left }
-                    .joinToString(separator = "<br>") {
-                        when (it) {
-                            is Either.Left -> "Failure: ${it.error}"
-                            is Either.Right -> "Success: ${it.value}"
+                title =
+                    when {
+                        result.all { it is Either.Right } -> "Import Successful"
+                        result.any { it is Either.Left } -> "Partial Success"
+                        else -> "Import Failed"
+                    },
+                message =
+                    result
+                        .sortedBy { it is Either.Left }
+                        .joinToString(separator = "<br>") {
+                            when (it) {
+                                is Either.Left -> "Failure: ${it.error}"
+                                is Either.Right -> "Success: ${it.value}"
+                            }
                         }
-                    }
             )
         }
     }
 
-    private fun ProjectOps.importProject(project: QCProject): List<Either<String, CodeItem>> {
-        val input = ProjectInput(
-            rawName = project.name,
-            enabled = true,
-        )
+    private fun QuickCodeService.ProjectOps.importProject(project: QCProject): List<Either<String, CodeItem>> {
+        val input =
+            QuickCodeService.ProjectInput(
+                rawName = project.name,
+                enabled = true,
+            )
         return import(project, input).fold(
             mapLeft = {
                 listOf(Either.Left(it))
@@ -113,10 +116,11 @@ class ImportQuickCodeService(
         )
     }
 
-    private fun CodeGroupOps.importGroup(group: CodeGroup): List<Either<String, CodeItem>> {
-        val input = CodeGroupInput(
-            rawName = group.name
-        )
+    private fun QuickCodeService.CodeGroupOps.importGroup(group: CodeGroup): List<Either<String, CodeItem>> {
+        val input =
+            QuickCodeService.CodeGroupInput(
+                rawName = group.name
+            )
         return import(group, input).fold(
             mapLeft = {
                 listOf(Either.Left(it))
@@ -130,31 +134,42 @@ class ImportQuickCodeService(
         )
     }
 
-    private fun CodeItemOps.importCodeItem(codeItem: CodeItem): Either<String, CodeItem> {
-        val input = CodeItemInput(
-            rawName = codeItem.name,
-            rawImports = generateImportsCode(codeItem.imports) ?: "",
-            rawCode = codeItem.codeTemplate,
-        )
+    private fun QuickCodeService.CodeItemOps.importCodeItem(codeItem: CodeItem): Either<String, CodeItem> {
+        val input =
+            QuickCodeService.CodeItemInput(
+                rawName = codeItem.name,
+                rawImports = generateImportsCode(codeItem.imports) ?: "",
+                rawCode = codeItem.codeTemplate,
+            )
         return import(codeItem, input)
     }
 
     private fun <I, T : Reorderable> BaseOperations<I, T>.import(
         item: T,
         input: I,
-    ): Either<String, T> {
-        return when (val res = addItem(input)) {
-            is AddOperationResult.Added -> Either.Right(item)
-            is AddOperationResult.AlreadyExists -> {
-                when (val editRes = editItem(
-                    item = item,
-                    input = input
-                )) {
-                    is EditOperationResult.Invalid -> Either.Left(
-                        "Failed to import $item because ${editRes.reason}."
-                    )
+    ): Either<String, T> =
+        when (val res = addItem(input)) {
+            is AddOperationResult.Added -> {
+                Either.Right(item)
+            }
 
-                    is EditOperationResult.Updated -> Either.Right(item)
+            is AddOperationResult.AlreadyExists -> {
+                when (
+                    val editRes =
+                        editItem(
+                            item = item,
+                            input = input
+                        )
+                ) {
+                    is EditOperationResult.Invalid -> {
+                        Either.Left(
+                            "Failed to import $item because ${editRes.reason}."
+                        )
+                    }
+
+                    is EditOperationResult.Updated -> {
+                        Either.Right(item)
+                    }
                 }
             }
 
@@ -162,5 +177,4 @@ class ImportQuickCodeService(
                 Either.Left("Failed to import $item because ${res.reason}.")
             }
         }
-    }
 }

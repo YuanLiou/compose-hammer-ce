@@ -1,17 +1,21 @@
 [versions]
 # libraries
+kotlinxSerialization = "1.8.1"
+ktlintCli = "1.6.0"
 
 # plugins
 kotlin = "2.1.21"
 changelog = "2.2.1"
 gradleIntelliJPlugin = "2.6.0"
-kotlinxSerialization = "1.8.1"
+spotless = "7.0.4"
 
 [libraries]
 kotlinx-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+spotless-gradle-plugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 gradleIntelliJPlugin = { id = "org.jetbrains.intellij.platform", version.ref = "gradleIntelliJPlugin" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

@@ -1,17 +1,18 @@
 package com.ivyapps.composehammer.domain.quickcode.compiler
 
-import com.ivyapps.composehammer.domain.quickcode.compiler.data.*
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.IfStatement
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.QCVariableValue
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.QuickCodeAst
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.RawText
+import com.ivyapps.composehammer.domain.quickcode.compiler.data.Variable
 
 class QuickCodeInterpreter(
     private val variables: Map<String, QCVariableValue>,
 ) {
-    fun evaluate(
-        ast: QuickCodeAst,
-    ): String {
-        return buildString {
+    fun evaluate(ast: QuickCodeAst,): String =
+        buildString {
             evaluateInternal(ast)
         }
-    }
 
     private fun StringBuilder.evaluateInternal(ast: QuickCodeAst) {
         var current: QuickCodeAst? = ast
@@ -48,9 +49,7 @@ class QuickCodeInterpreter(
         }
     }
 
-    private fun evaluate(
-        condition: IfStatement.Condition
-    ): Boolean {
+    private fun evaluate(condition: IfStatement.Condition): Boolean {
         return when (condition) {
             is IfStatement.Condition.And -> {
                 evaluate(condition.cond1) && evaluate(condition.cond2)
