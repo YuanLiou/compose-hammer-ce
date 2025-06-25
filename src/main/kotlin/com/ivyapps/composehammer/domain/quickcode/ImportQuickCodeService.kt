@@ -3,7 +3,7 @@ package com.ivyapps.composehammer.domain.quickcode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileChooser.FileChooser
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.ivyapps.composehammer.domain.data.Either
@@ -34,7 +34,15 @@ class ImportQuickCodeService(
     }
 
     private fun chooseFileAndImport() {
-        val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor()
+        val descriptor =
+            FileChooserDescriptor(
+                true,
+                false,
+                false,
+                false,
+                false,
+                false
+            )
         descriptor.description = "Choose File to Import"
         FileChooser.chooseFile(descriptor, project, null) { chosenFile: VirtualFile ->
             importStringFromFile(chosenFile)
