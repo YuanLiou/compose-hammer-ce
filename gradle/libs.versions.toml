@@ -4,7 +4,7 @@ kotlinxSerialization = "1.8.1"
 ktlintCli = "1.6.0"
 
 # plugins
-kotlin = "2.1.21"
+kotlin = "2.2.0"
 changelog = "2.2.1"
 gradleIntelliJPlugin = "2.6.0"
 spotless = "7.0.4"
